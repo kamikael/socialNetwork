@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réseau Social - TP Final</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/app/assets/images/assets/css/bootstrap.css">
+    
+    <style>
+        /* Variables CSS pour les couleurs Facebook */
+        :root {
+            --facebook-blue: #1877f2;
+            --facebook-blue-dark: #166fe5;
+            --facebook-blue-light: #42a5f5;
+            --facebook-gray: #f0f2f5;
+            --facebook-gray-dark: #e4e6ea;
+            --facebook-gray-darker: #8a8d91;
+            --facebook-text: #1c1e21;
+            --facebook-white: #ffffff;
+            --shadow-1: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-2: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styles de base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--facebook-gray);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--facebook-text);
+            line-height: 1.6;
+        }
+
+        /* Navigation principale - Style Facebook */
+        .navbar {
+            background-color: var(--facebook-white) !important;
+            box-shadow: var(--shadow-1);
+            border-bottom: 1px solid var(--facebook-gray-dark);
+            padding: 8px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+            height: 56px;
+        }
+
+        .navbar-brand {
+            color: var(--facebook-blue) !important;
+            font-weight: 700;
+            font-size: 1.5rem;
+            text-decoration: none;
+            margin-right: 2rem;
+        }
+
+        .navbar-brand:hover {
+            color: var(--facebook-blue-dark) !important;
+        }
+
+        .navbar-brand i {
+            font-size: 1.8rem;
+            margin-right: 8px;
+        }
+
+        /* Navigation centrale - Style Facebook */
+        .nav-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-center .nav-item {
+            margin: 0 4px;
+        }
+
+        .nav-center .nav-link {
+            color: var(--facebook-gray-darker) !important;
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            position: relative;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .nav-center .nav-link i {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .nav-center .nav-link:hover {
+            background-color: var(--facebook-gray);
+            color: var(--facebook-blue) !important;
+        }
+
+        .nav-center .nav-link.active {
+            color: var(--facebook-blue) !important;
+            background-color: transparent;
+        }
+
+        .nav-center .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--facebook-blue);
+            border-radius: 2px;
+        }
+
+        /* Barre de recherche */
+        .search-container {
+            position: relative;
+            margin-right: 1rem;
+        }
+
+        .search-input {
+            background-color: var(--facebook-gray);
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px 8px 40px;
+            width: 240px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--facebook-blue);
+            background-color: var(--facebook-white);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--facebook-gray-darker);
+            font-size: 0.9rem;
+        }
+
+        /* Menu utilisateur */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-menu .nav-link {
+            color: var(--facebook-gray-darker) !important;
+            padding: 8px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            background-color: var(--facebook-gray);
+        }
+
+        .user-menu .nav-link:hover {
+            background-color: var(--facebook-gray-dark);
+            color: var(--facebook-text) !important;
+        }
+
+        .user-menu .nav-link i {
+            font-size: 1.1rem;
+        }
+
+        /* Dropdown personnalisé */
+        .dropdown-menu {
+            border: none;
+            box-shadow: var(--shadow-2);
+            border-radius: 8px;
+            padding: 8px;
+            min-width: 200px;
+            margin-top: 8px;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            color: var(--facebook-text);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--facebook-gray);
+            color: var(--facebook-text);
+        }
+
+        .dropdown-item i {
+            margin-right: 8px;
+            color: var(--facebook-gray-darker);
+        }
+
+        /* Conteneur principal */
+        .main-container {
+            min-height: 100vh;
+            padding-top: 72px; /* Espace pour la navbar */
+            background-color: var(--facebook-gray);
+        }
+
+       .content-area {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    place-items: center;
+    min-height: calc(100vh - 72px);
+}
+
+        /* Loading spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--facebook-blue);
+        }
+
+        /* Navigation pour visiteurs */
+        .visitor-nav {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .visitor-nav .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .visitor-nav .btn-outline-primary {
+            color: var(--facebook-blue);
+            border: 1px solid var(--facebook-blue);
+            background-color: transparent;
+        }
+
+        .visitor-nav .btn-outline-primary:hover {
+            background-color: var(--facebook-blue);
+            color: white;
+        }
+
+        .visitor-nav .btn-primary {
+            background-color: var(--facebook-blue);
+            color: white;
+        }
+
+        .visitor-nav .btn-primary:hover {
+            background-color: var(--facebook-blue-dark);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .nav-center {
+                display: none;
+            }
+            
+            .search-input {
+                width: 200px;
+            }
+            
+            .navbar-brand {
+                margin-right: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                display: none;
+            }
+            
+            .content-area {
+                padding: 15px;
+            }
+            
+            .user-menu {
+                gap: 4px;
+            }
+            
+            .visitor-nav {
+                gap: 8px;
+            }
+            
+            .visitor-nav .btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+            
+            .navbar-brand i {
+                font-size: 1.4rem;
+            }
+            
+            .content-area {
+                padding: 10px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content-area > * {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Utilitaires */
+        .text-muted {
+            color: var(--facebook-gray-darker) !important;
+        }
+
+        .bg-white {
+            background-color: var(--facebook-white) !important;
+        }
+
+        .border-light {
+            border-color: var(--facebook-gray-dark) !important;
+        }
+
+        /* Scrollbar personnalisée */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--facebook-gray);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--facebook-gray-darker);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--facebook-text);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation principale -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid px-3">
+            <!-- Logo et marque -->
+            <a class="navbar-brand" href="#" onclick="loadPage('accueil')">
+                <i class="fas fa-users"></i> SocialNetwork
+            </a>
+            
+            <!-- Barre de recherche -->
+            <div class="search-container d-none d-md-block">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Rechercher...">
+            </div>
+            
+            <!-- Navigation centrale pour utilisateurs connectés -->
+            <div class="nav-center d-none d-lg-flex" id="nav-authenticated" style="display: none;">
+                <div class="nav-item">
+                    <a class="nav-link active" href="#" onclick="loadPage('accueil')">
+                        <i class="fas fa-home"></i>
+                        <span class="d-none d-xl-inline">Accueil</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="#" onclick="loadPage('amis')">
+                        <i class="fas fa-user-friends"></i>
+                        <span class="d-none d-xl-inline">Amis</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="#" onclick="loadPage('profil')">
+                        <i class="fas fa-user"></i>
+                        <span class="d-none d-xl-inline">Profil</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="#" onclick="loadPage('chat')">
+                        <i class="fas fa-comments"></i>
+                        <span class="d-none d-xl-inline">Chat</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Navigation pour visiteurs -->
+            <div class="visitor-nav" id="nav-visitor">
+                <a href="#" class="btn btn-outline-primary" onclick="loadPage('connexion')">
+                    <i class="fas fa-sign-in-alt"></i> Connexion
+                </a>
+                <a href="#" class="btn btn-primary" onclick="loadPage('inscription')">
+                    <i class="fas fa-user-plus"></i> Inscription
+                </a>
+            </div>
+            
+            <!-- Menu utilisateur connecté -->
+            <div class="user-menu" id="nav-user-menu" style="display: none;">
+                <a class="nav-link" href="#" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                </a>
+                <a class="nav-link" href="#" title="Messages">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Menu utilisateur">
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="loadPage('profil')">
+                                <i class="fas fa-user"></i> <span id="user-name">Mon Profil</span>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="loadBackOffice()">
+                                <i class="fas fa-cog"></i> Administration
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i> Déconnexion
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteneur principal -->
+    <div class="main-container">
+        <div class="container-fluid">
+            <!-- Zone de contenu dynamique -->
+            <div id="content" class="content-area">
+                <div class="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Bootstrap JS -->
+    <script src="assets/js/bootstrap.js"></script>
+    
+    <!-- Scripts de l'application -->
+    <script src="assets/js/app.js"></script>
+    <script src="vues/back-office/auth-check.js"></script>
+    <script src="assets/js/profil.js"></script>
+    <script src="assets/js/accueil.js"></script>
+    <script src="assets/js/amis.js"></script>
+    <script src="assets/js/connexion.js"></script>
+    <script src="assets/js/inscription.js"></script>
+    <script src="assets/js/mot_de_passe_oub.js"></script>
+    <script>
+        // Initialisation de l'application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Vérifier si l'utilisateur est connecté
+            checkAuthStatus();
+            
+            // Charger la page d'accueil par défaut
+            loadPage('accueil');
+        });
+    </script>
+</body>
+</html>

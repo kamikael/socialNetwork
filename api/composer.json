@@ -1,0 +1,18 @@
+{
+    "name": "jean-claude/api",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "JeanClaude\\Api\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "kami",
+            "email": "darksideinfinity983@gmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.10"
+    }
+}

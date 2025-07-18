@@ -1,0 +1,158 @@
+<!-- COUVERTURE + PHOTO DE PROFIL -->
+<div class="position-relative">
+  <div
+    style="height: 300px; background: url('images/cover.jpg') center/cover"
+  ></div>
+
+  <!-- Photo de profil -->
+  <img
+    id="friend-profile-avatar"
+    src="//app/assets/images///assets/images/p1.jpg"
+    alt="Photo de profil"
+    class="rounded-circle border border-5 border-white"
+    style="position: absolute; top: 230px; left: 50px; width: 150px"
+  />
+
+  <!-- INFOS UTILISATEUR -->
+  <div class="container mt-5">
+    <div
+      class="bg-white rounded shadow-sm p-3 d-flex align-items-center justify-content-between"
+    >
+      <div class="ms-md-5">
+        <h3 id="friend-profile-name" class="mb-1">Nom de l'ami</h3>
+        <p id="friend-profile-bio" class="text-muted mb-1">
+          Bio de l'ami
+        </p>
+        <p id="friend-profile-ville" class="text-muted">Ville de l'ami</p>
+      </div>
+      <div>
+        <button
+          class="btn btn-primary me-2"
+          id="startChatBtn"
+          onclick="startChatWithFriend()"
+        >
+          <i class="fas fa-comments"></i> Message
+        </button>
+        <button
+          class="btn btn-outline-secondary"
+          onclick="loadPage('amis')"
+        >
+          <i class="fas fa-arrow-left"></i> Retour
+        </button>
+      </div>
+    </div>
+
+    <!-- Onglets -->
+    <ul class="nav nav-tabs mt-3" id="friendProfileTabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#friend-publications"
+          >Publications</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#friend-about">À&nbsp;propos</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CONTENU ONGLET -->
+  <div class="container mt-4 tab-content">
+    <!-- PUBLICATIONS -->
+    <div class="tab-pane fade show active" id="friend-publications">
+      <div class="row">
+        <!-- COLONNE GAUCHE -->
+        <aside class="col-md-4">
+          <!-- Intro -->
+          <div class="bg-white rounded shadow-sm p-3 mb-3">
+            <h6 class="fw-bold mb-2">Intro</h6>
+            <p>🌍 <span id="friend-intro-ville">Habite à ...</span></p>
+            <p>💼 <span id="friend-intro-travail">Travaille chez ...</span></p>
+            <p>📖 <span id="friend-intro-etudes">Étudie ...</span></p>
+            <p>📧 <span id="friend-intro-email">Email</span></p>
+            <p>📱 <span id="friend-intro-phone">Téléphone</span></p>
+          </div>
+
+          <!-- Photos -->
+          <div class="bg-white rounded shadow-sm p-3 mb-3">
+            <h6 class="fw-bold mb-3">Photos</h6>
+            <div class="row g-2">
+              <div class="col-4">
+                <img
+                  src="//app/assets/images///assets/images/p6.jpg"
+                  class="img-fluid rounded"
+                  alt=""
+                />
+              </div>
+              <div class="col-4">
+                <img
+                  src="//app/assets/images///assets/images/D2.jpg"
+                  class="img-fluid rounded"
+                  alt=""
+                />
+              </div>
+              <div class="col-4">
+                <img
+                  src="//app/assets/images///assets/images/D1.jpg"
+                  class="img-fluid rounded"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- COLONNE DROITE -->
+        <section class="col-md-8">
+          <!-- Exemple de publication -->
+          <div class="bg-white rounded shadow-sm p-3">
+            <div class="d-flex mb-2">
+              <img
+                id="friend-post-avatar"
+                src="//app/assets/images///assets/images/p1.jpg"
+                width="50"
+                class="rounded-circle me-2"
+              />
+              <div>
+                <strong id="friend-post-name">Nom de l'ami</strong><br />
+                <small class="text-muted">il y a 3 heures</small>
+              </div>
+            </div>
+            <p>Contenu de la publication...</p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- À PROPOS -->
+    <div class="tab-pane fade" id="friend-about">
+      <div class="bg-white rounded shadow-sm p-4">
+        <h5 id="friend-about-title">À propos de ...</h5>
+        <div id="friend-about-content">
+          <p>Chargement des informations...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.friend-card {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.friend-card:hover {
+  transform: scale(1.05);
+}
+
+.friend-card img {
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.friend-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+</style> 

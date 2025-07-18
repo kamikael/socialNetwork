@@ -1,0 +1,232 @@
+/* Styles personnalisés pour les likes et commentaires */
+
+/* Animation pour les likes */
+.like-button {
+    transition: all 0.3s ease;
+}
+
+.like-button:hover {
+    transform: scale(1.1);
+}
+
+.like-button.liked {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.like-button.liked i {
+    color: white !important;
+}
+
+/* Animation pour l'icône de like */
+.like-button i {
+    transition: transform 0.2s ease;
+}
+
+.like-button:active i {
+    transform: scale(1.3);
+}
+
+/* Styles pour les commentaires */
+.comment-section {
+    border-top: 1px solid #dee2e6;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.comment-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid #007bff;
+    transition: all 0.2s ease;
+}
+
+.comment-item:hover {
+    background: #e9ecef;
+    transform: translateX(2px);
+}
+
+.comment-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.comment-author {
+    font-weight: 600;
+    color: #007bff;
+    font-size: 0.9rem;
+}
+
+.comment-date {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.comment-content {
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+/* Styles pour les actions d'article */
+.article-actions {
+    border-top: 1px solid #dee2e6;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+.action-button {
+    transition: all 0.2s ease;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+
+.action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Animation pour les compteurs */
+.counter {
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.counter.updated {
+    animation: pulse 0.6s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Styles pour le formulaire de commentaire */
+.comment-input {
+    border-radius: 20px;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.comment-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+
+.comment-submit {
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
+
+.comment-submit:hover {
+    transform: scale(1.05);
+}
+
+/* Styles pour les articles */
+.article-card {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+}
+
+.article-card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.article-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #dee2e6;
+}
+
+.article-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Animation de chargement pour les commentaires */
+.comments-loading {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+.comments-loading .spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Styles pour les emojis de réaction */
+.reaction-emoji {
+    font-size: 1.2rem;
+    margin-right: 4px;
+    transition: transform 0.2s ease;
+}
+
+.reaction-emoji:hover {
+    transform: scale(1.2);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .action-button {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+    
+    .comment-item {
+        padding: 8px;
+    }
+    
+    .comment-avatar {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* Animation d'apparition pour les nouveaux commentaires */
+.comment-item.new {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Styles pour les notifications de succès/erreur */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+} 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger Style Facebook</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light" style="font-family: 'Segoe UI', sans-serif;">
+
+<div class="container-fluid p-0" style="height: 100vh;">
+    <div class="row g-0 h-100">
+        
+        <!-- Sidebar des amis -->
+        <div class="col-md-4 col-lg-3 border-end bg-white" style="min-width: 280px;">
+            <div class="d-flex flex-column h-100">
+                <!-- Header -->
+                <div class="border-bottom px-3 py-3">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h4 class="mb-0 fw-bold">Messages</h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-light rounded-circle p-2" style="width: 36px; height: 36px;">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <button class="btn btn-light rounded-circle p-2" style="width: 36px; height: 36px;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Barre de recherche -->
+                    <div class="search-box">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-0 ps-3">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" id="searchInput" class="form-control bg-light border-0" 
+                                   placeholder="Rechercher dans Messenger..." 
+                                   style="border-radius: 0 20px 20px 0;" 
+                                   oninput="filterFriends()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liste des amis -->
+                <div class="friend-list flex-grow-1 overflow-auto" id="friendList">
+   
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone de chat principale -->
+        <div class="col-md-8 col-lg-6 d-flex flex-column">
+            <!-- Header du chat -->
+            <div class="chat-header bg-white border-bottom p-3" id="chatHeader">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center" id="chatHeaderContent">
+                        <i class="fas fa-comments me-3 fs-4 text-primary"></i>
+                        <div>
+                            <h6 class="mb-0 text-muted">Sélectionnez un ami pour commencer une conversation</h6>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2" id="chatActions" style="display: none !important;">
+                        <button class="btn btn-light rounded-circle p-2" style="width: 36px; height: 36px;">
+                            <i class="fas fa-phone text-primary"></i>
+                        </button>
+                        <button class="btn btn-light rounded-circle p-2" style="width: 36px; height: 36px;">
+                            <i class="fas fa-video text-primary"></i>
+                        </button>
+                        <button class="btn btn-light rounded-circle p-2" style="width: 36px; height: 36px;">
+                            <i class="fas fa-info-circle text-primary"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Corps du chat -->
+            <div class="chat-body flex-grow-1 overflow-auto p-3" id="chatBody" style="background-color: #f8f9fa;">
+                <div class="d-flex flex-column align-items-center justify-content-center h-100">
+                    <i class="fas fa-comments fa-4x text-muted mb-3"></i>
+                    <h5 class="text-muted mb-2">Aucune discussion ouverte</h5>
+                    <p class="text-muted text-center">Sélectionnez un ami dans la liste pour commencer à discuter</p>
+                </div>
+            </div>
+
+            <!-- Footer du chat -->
+            <div class="chat-footer bg-white border-top p-3" id="chatFooter" style="display: none;">
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-light rounded-circle p-2" style="width: 36px; height: 36px;">
+                        <i class="fas fa-plus text-primary"></i>
+                    </button>
+                    <button class="btn btn-light rounded-circle p-2" style="width: 36px; height: 36px;">
+                        <i class="fas fa-image text-primary"></i>
+                    </button>
+                    <div class="input-group flex-grow-1">
+                        <input type="text" id="messageInput" class="form-control border-0 bg-light" 
+                               placeholder="Tapez votre message..." 
+                               style="border-radius: 20px;"
+                               onkeypress="handleKeyPress(event)">
+                    </div>
+                    <button class="btn btn-primary rounded-circle p-2" style="width: 36px; height: 36px;" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panneau d'informations -->
+        <div class="col-lg-3 bg-white border-start d-none d-lg-block">
+            <div class="p-4 text-center" id="rightPanel">
+                <div class="mb-4">
+                    <i class="fas fa-user-circle fa-4x text-muted"></i>
+                </div>
+                <h6 class="text-muted">Informations du contact</h6>
+                <p class="text-muted small">Sélectionnez un ami pour voir ses informations</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

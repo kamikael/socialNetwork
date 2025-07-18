@@ -1,0 +1,495 @@
+<!-- COUVERTURE + PHOTO DE PROFIL -->
+<div class="position-relative">
+  <div
+    style="height: 300px; background: url('images/cover.jpg') center/cover"
+  ></div>
+
+  <!-- Photo de profil -->
+  <img
+    id="profile-avatar"
+    src="//app/assets/images///assets/images/p1.jpg"
+    alt="Photo de profil"
+    class="rounded-circle border border-5 border-white"
+    style="position: absolute; top: 230px; left: 50px; width: 150px"
+  />
+
+  <!-- INFOS UTILISATEUR -->
+  <div class="container mt-5">
+    <div
+      class="bg-white rounded shadow-sm p-3 d-flex align-items-center justify-content-between"
+    >
+      <div class="ms-md-5">
+        <h3 id="profile-name" class="mb-1">Jean Dupont</h3>
+        <p id="profile-bio" class="text-muted mb-1">
+          Étudie à Université de Cotonou
+        </p>
+        <p id="profile-ville" class="text-muted">Habite à Cotonou</p>
+      </div>
+      <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#editModal"
+      >
+        Modifier le profil
+      </button>
+    </div>
+
+    <!-- Onglets -->
+    <ul class="nav nav-tabs mt-3" id="profileTabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#publications"
+          >Publications</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#amis">Amis</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#about">À&nbsp;propos</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CONTENU ONGLET -->
+  <div class="container mt-4 tab-content">
+    <!-- PUBLICATIONS -->
+    <div class="tab-pane fade show active" id="publications">
+      <div class="row">
+        <!-- COLONNE GAUCHE -->
+        <aside class="col-md-4">
+          <!-- Intro -->
+          <div class="bg-white rounded shadow-sm p-3 mb-3">
+            <h6 class="fw-bold mb-2">Intro</h6>
+            <p>🌍 <span id="intro-ville">Habite à Cotonou</span></p>
+            <p>💼 Travaille chez Freelance</p>
+            <p>📖 Étudie l’informatique</p>
+            <p>❤️ En couple</p>
+          </div>
+
+          <!-- Photos -->
+          <div class="bg-white rounded shadow-sm p-3 mb-3">
+            <h6 class="fw-bold mb-3">Photos</h6>
+            <div class="row g-2">
+              <div class="col-4">
+                <img
+                  src="//app/assets/images///assets/images/p6.jpg"
+                  class="img-fluid rounded"
+                  alt=""
+                />
+              </div>
+              <div class="col-4">
+                <img
+                  src="//app/assets/images///assets/images/D2.jpg"
+                  class="img-fluid rounded"
+                  alt=""
+                />
+              </div>
+              <div class="col-4">
+                <img
+                  src="//app/assets/images///assets/images/D1.jpg"
+                  class="img-fluid rounded"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Amis -->
+          <div class="bg-white rounded shadow-sm p-3">
+            <h6 class="fw-bold mb-3">Amis</h6>
+            <div class="row g-2">
+              <div class="col-4 text-center">
+                <img
+                  src="//app/assets/images///assets/images/profil1.jpg"
+                  class="img-fluid rounded-circle"
+                  alt=""
+                />
+                <small class="d-block">Majorelle</small>
+              </div>
+              <div class="col-4 text-center">
+                <img
+                  src="//app/assets/images///assets/images/profil2.jpg"
+                  class="img-fluid rounded-circle"
+                  alt=""
+                />
+                <small class="d-block">Ella</small>
+              </div>
+              <div class="col-4 text-center">
+                <img
+                  src="//app/assets/images///assets/images/profil3.jpg"
+                  class="img-fluid rounded-circle"
+                  alt=""
+                />
+                <small class="d-block">Ariel</small>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- COLONNE DROITE -->
+        <section class="col-md-8">
+             <!-- Contenu principal -->
+            <div class="col-12 py-4">
+                <div class="row justify-content-center">
+                    
+                    <!-- Zone de contenu centrale -->
+                    <div class="col-12 py-4">
+                        
+                        <!-- Créer un post -->
+                        <div class="card shadow-sm mb-4 border-0">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <button class="btn btn-light flex-grow-1 text-start rounded-pill py-2" onclick="showCreateArticleModal()">
+                                        Que voulez-vous partager ?
+                                    </button>
+                                </div>
+                                <hr class="my-3">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <button class="btn btn-light w-100 d-flex align-items-center justify-content-center py-2" onclick="showCreateArticleModal()">
+                                            <i class="fas fa-edit text-primary me-2"></i>
+                                            <span class="small">Article</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-4">
+                                        <button class="btn btn-light w-100 d-flex align-items-center justify-content-center py-2">
+                                            <i class="fas fa-image text-success me-2"></i>
+                                            <span class="small">Photo</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-4">
+                                        <button class="btn btn-light w-100 d-flex align-items-center justify-content-center py-2">
+                                            <i class="fas fa-smile text-warning me-2"></i>
+                                            <span class="small">Humeur</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Formulaire de création d'article (caché par défaut) -->
+                        <div class="card shadow-sm mb-4 border-0" id="create-article-form" style="display: none;">
+                            <div class="card-header bg-white border-0 pb-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0 fw-bold">Créer un article</h5>
+                                    <button type="button" class="btn-close" onclick="hideCreateArticleForm()"></button>
+                                </div>
+                            </div>
+                            <div class="card-body pt-3">
+                                <form id="article-form">
+                                    <div class="d-flex mb-3">
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0 fw-bold">John Doe</h6>
+                                            <small class="text-muted">Public</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <textarea class="form-control border-0 fs-4" 
+                                                  id="article-content" 
+                                                  rows="4" 
+                                                  placeholder="Que voulez-vous partager ?" 
+                                                  required
+                                                  style="resize: none; font-size: 1.1rem;"></textarea>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="border rounded-3 p-3 bg-light">
+                                            <label for="article-image" class="form-label d-flex align-items-center mb-0">
+                                                <i class="fas fa-image text-success me-2"></i>
+                                                <span>Ajouter une image</span>
+                                            </label>
+                                            <input type="file" class="form-control border-0 bg-transparent" id="article-image" accept="image/*">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-light me-2" onclick="hideCreateArticleForm()">
+                                            Annuler
+                                        </button>
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            Publier
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                    
+                        
+                        <!-- Conteneur des articles -->
+                        <div id="articles-container">
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Chargement des articles...</span>
+                                </div>
+                                <p class="text-muted mt-3">Chargement des articles...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- AMIS -->
+    <div class="tab-pane fade" id="amis">
+      <div class="bg-white rounded shadow-sm p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0">Ami(e)s</h4>
+          <a href="#" class="text-primary">Tou(te)s les ami(e)s</a>
+        </div>
+        <p class="text-muted">25 ami(e)s</p>
+
+        <div
+          class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3"
+        >
+          <div class="col text-center friend-card">
+            <img
+              src="//app/assets/images///assets/images/F9.jpg"
+              class="img-fluid rounded"
+              alt=""
+            />
+            <p>Ella</p>
+          </div>
+          <div class="col text-center friend-card">
+            <img
+              src="//app/assets/images///assets/images/F8.jpg"
+              class="img-fluid rounded"
+              alt=""
+            />
+            <p>Queen</p>
+          </div>
+          <div class="col text-center friend-card">
+            <img
+              src="//app/assets/images///assets/images/F7.jpg"
+              class="img-fluid rounded"
+              alt=""
+            />
+            <p>Paris</p>
+          </div>
+          <div class="col text-center friend-card">
+            <img
+              src="//app/assets/images///assets/images/F6.jpg"
+              class="img-fluid rounded"
+              alt=""
+            />
+            <p>Lior</p>
+          </div>
+          <div class="col text-center friend-card">
+            <img
+              src="//app/assets/images///assets/images/F5.jpg"
+              class="img-fluid rounded"
+              alt=""
+            />
+            <p>Florida</p>
+          </div>
+          <div class="col text-center friend-card">
+            <img
+              src="//app/assets/images///assets/images/F4.jpg"
+              class="img-fluid rounded"
+              alt=""
+            />
+            <p>Deo Gracias</p>
+          </div>
+          <div class="col text-center friend-card">
+            <img
+              src="//app/assets/images///assets/images/F3.jpg"
+              class="img-fluid rounded"
+              alt=""
+            />
+            <p>Malick</p>
+          </div>
+          <div class="col text-center friend-card">
+            <img
+              src="//app/assets/images///assets/images/F2.jpg"
+              class="img-fluid rounded"
+              alt=""
+            />
+            <p>Elyas</p>
+          </div>
+          <div class="col text-center friend-card">
+            <img
+              src="//app/assets/images///assets/images/F1.jpg"
+              class="img-fluid rounded"
+              alt=""
+            />
+            <p>Darren</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- À PROPOS -->
+    <div class="tab-pane fade" id="about">
+      <div class="bg-white rounded shadow-sm p-4">
+        <h5>À propos de Jean</h5>
+        <p>Ici, vous pouvez ajouter plus de détails personnels.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL D'ÉDITION -->
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <form class="modal-content" id="editProfileForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier le profil</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <!-- Photo de profil -->
+          <div class="text-center mb-4">
+            <div class="position-relative d-inline-block">
+              <img
+                id="edit-avatar-preview"
+                src="//app/assets/images///assets/images/p1.jpg"
+                alt="Photo de profil"
+                class="rounded-circle border border-3 border-primary"
+                style="width: 120px; height: 120px; object-fit: cover;"
+              />
+              <button
+                type="button"
+                class="btn btn-primary btn-sm position-absolute bottom-0 end-0"
+                onclick="document.getElementById('avatar-upload').click()"
+                style="border-radius: 50%; width: 35px; height: 35px;"
+              >
+                <i class="fas fa-camera"></i>
+              </button>
+            </div>
+            <input
+              type="file"
+              id="avatar-upload"
+              accept="image/*"
+              style="display: none"
+              onchange="updateAvatar(event)"
+            />
+            <p class="text-muted mt-2">Cliquez sur l'icône pour changer votre photo</p>
+          </div>
+
+          <div class="row">
+            <!-- Informations personnelles -->
+            <div class="col-md-6">
+              <h6 class="fw-bold mb-3">Informations personnelles</h6>
+              
+              <div class="mb-3">
+                <label for="editPrenom" class="form-label">Prénom *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editPrenom"
+                  name="prenom"
+                  
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="editNom" class="form-label">Nom *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editNom"
+                  name="nom"
+                  
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="editEmail" class="form-label">Email *</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="editEmail"
+                  name="email"
+                  required
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="editTelephone" class="form-label">Téléphone</label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="editTelephone"
+                  name="telephone"
+                  placeholder="+229 XX XX XX XX"
+                />
+              </div>
+            </div>
+
+            <!-- Informations supplémentaires -->
+            <div class="col-md-6">
+              <h6 class="fw-bold mb-3">Informations supplémentaires</h6>
+              
+              <div class="mb-3">
+                <label for="editDateNaissance" class="form-label">Date de naissance</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="editDateNaissance"
+                  name="date_naissance"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="editVille" class="form-label">Ville</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editVille"
+                  name="ville"
+                  placeholder="Ex: Cotonou"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="editAdresse" class="form-label">Adresse</label>
+                <textarea
+                  class="form-control"
+                  id="editAdresse"
+                  name="adresse"
+                  rows="2"
+                  placeholder="Votre adresse complète"
+                ></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="editBio" class="form-label">Bio</label>
+                <textarea
+                  class="form-control"
+                  id="editBio"
+                  name="bio"
+                  rows="3"
+                  placeholder="Parlez-nous un peu de vous..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Messages d'erreur/succès -->
+          <div id="editProfileMessages"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+            <span class="spinner-border spinner-border-sm me-2" style="display: none;" id="saveSpinner"></span>
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
