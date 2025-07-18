@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SocialNetwork - Créer un compte</title>
+
+  <link rel="stylesheet" href="assets/css/bootstrap.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+
+<body class="d-flex justify-content-center align-items-center min-vh-100 bg-primary bg-gradient p-3">
+
+  <div class="card p-4 shadow-lg rounded-4"
+       style="max-width: 450px; width: 100%; background-color: rgba(255,255,255,0.95);">
+    <div class="text-center mb-4">
+      <div class="text-center mb-4">
+      <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+        <i class="fas fa-users text-white fa-2x"></i>
+      </div>
+      <h1 class="h4 fw-bold text-primary">Social Network</h1>
+      <p class="text-secondary mb-0">Votre réseau social éducatif</p>
+    </div>
+
+    <!-- On donne l'ID attendu par le script : register-form -->
+    <form id="register-form" method="POST">
+      
+      <!-- Prénom -->
+      <div class="mb-3 input-group">
+        <span class="input-group-text bg-white border-end-0 text-primary">
+          <i class="fas fa-user"></i>
+        </span>
+        <input
+          type="text"
+          id="prenom"      
+          name="prenom"
+          class="form-control border-start-0"
+          placeholder="Prénom"
+          required
+        />
+      </div>
+
+      <!-- Nom -->
+      <div class="mb-3 input-group">
+        <span class="input-group-text bg-white border-end-0 text-primary">
+          <i class="fas fa-user"></i>
+        </span>
+        <input
+          type="text"
+          id="nom"         
+          name="nom"
+          class="form-control border-start-0"
+          placeholder="Nom"
+          required
+        />
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3 input-group">
+        <span class="input-group-text bg-white border-end-0 text-primary">
+          <i class="fas fa-envelope"></i>
+        </span>
+        <input
+          type="email"
+          id="email"       
+          name="email"
+          class="form-control border-start-0"
+          placeholder="Adresse e-mail"
+          required
+        />
+      </div>
+
+      <!-- Mot de passe -->
+      <div class="mb-3 input-group position-relative">
+        <span class="input-group-text bg-white border-end-0 text-primary">
+          <i class="fas fa-lock"></i>
+        </span>
+        <input
+          type="password"
+          id="password"    
+          name="password"
+          class="form-control border-start-0"
+          placeholder="Mot de passe"
+          required
+        />
+        <!-- Icone toggle avec l'ID et l'onclick attendus -->
+        <span class="position-absolute end-0 me-3"
+              style="top:50%; transform:translateY(-50%); cursor:pointer;">
+          <i
+            class="fas fa-eye text-secondary"
+            id="password-toggle-icon"
+            onclick="togglePassword('password')"
+          ></i>
+        </span>
+      </div>
+
+      <!-- Confirmation du mot de passe -->
+      <div class="mb-3 input-group position-relative">
+        <span class="input-group-text bg-white border-end-0 text-primary">
+          <i class="fas fa-lock"></i>
+        </span>
+        <input
+          type="password"
+          id="password_confirm"  
+          name="password_confirm"
+          class="form-control border-start-0"
+          placeholder="Confirmer le mot de passe"
+          required
+        />
+        <!-- Icone toggle confirm avec l'ID et l'onclick attendus -->
+        <span class="position-absolute end-0 me-3"
+              style="top:50%; transform:translateY(-50%); cursor:pointer;">
+          <i
+            class="fas fa-eye text-secondary"
+            id="password-confirm-toggle-icon"
+            onclick="togglePassword()"
+          ></i>
+        </span>
+      </div>
+
+      <!-- Date de naissance -->
+      <div class="mb-3 input-group">
+        <span class="input-group-text bg-white border-end-0 text-primary">
+          <i class="fas fa-calendar-alt"></i>
+        </span>
+        <input
+          type="date"
+          id="date_naissance"  
+          name="date_naissance"
+          class="form-control border-start-0"
+          required
+        />
+      </div>
+
+      <!-- Conditions d'utilisation -->
+      <div class="form-check mb-4 small">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          id="terms"             
+          required
+        />
+        <label class="form-check-label" for="terms">
+          J'accepte les
+          <!-- appel à showTerms() pour ouvrir la modal -->
+          <a href="javascript:void(0)"
+             class="text-primary text-decoration-none"
+             onclick="showTerms()"
+          >
+            Conditions d'utilisation
+          </a>
+        </label>
+      </div>
+
+      <button type="submit"
+              class="btn btn-primary w-100 fw-semibold py-2 shadow-sm">
+        Créer mon compte
+      </button>
+
+      <div class="text-center mt-3 small">
+        <p>
+          Vous avez déjà un compte ?
+          <a href="#" onclick="loadPage('connexion')" 
+             class="text-primary fw-semibold text-decoration-none">
+            Se connecter
+          </a>
+        </p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal pour les Conditions d'utilisation -->
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Conditions d'utilisation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Ton contenu des conditions ici -->
+          <p>Voici les conditions d'utilisation...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/inscription.js"></script>
+</body>
+</html>

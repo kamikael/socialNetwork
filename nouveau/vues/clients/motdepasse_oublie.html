@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Récupération de mot de passe</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="assets/css/bootstrap.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body class="bg-primary bg-gradient min-vh-100 d-flex justify-content-center align-items-center p-3">
+
+  <div class="container bg-white rounded-4 shadow-lg overflow-hidden d-flex flex-column flex-md-row p-0" style="max-width: 1000px;">
+    
+    <!-- Left Panel -->
+    <div class="bg-primary text-white d-flex flex-column justify-content-center p-4 p-md-5 flex-fill">
+      <div class="mb-4 d-flex align-items-center">
+        <i class="fa-solid fa-hexagon-nodes fs-2 me-2 text-info"></i>
+        <h1 class="fs-4 fw-bold m-0">SocialNet</h1>
+      </div>
+      <h2 class="fs-3 fw-bold mb-3">Mot de passe oublié ?</h2>
+      <p class="opacity-75 mb-4">Pas de souci ! Entrez simplement votre adresse email et nous vous enverrons un code de réinitialisation.</p>
+      <ul class="list-unstyled">
+        <li class="mb-2"><i class="fas fa-shield-alt me-2 text-info"></i> Sécurité garantie</li>
+        <li class="mb-2"><i class="fas fa-bolt me-2 text-info"></i> Processus rapide et simple</li>
+        <li class="mb-2"><i class="fas fa-lock me-2 text-info"></i> Protection des données</li>
+      </ul>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="p-4 p-md-5 flex-fill">
+      <div class="alert alert-success d-none" id="successMessage">
+        <i class="fas fa-check-circle me-2"></i>
+        Un code de réinitialisation a été envoyé à votre adresse. Vérifiez votre boîte de réception.
+      </div>
+
+      <h2 class="fw-bold mb-2">Réinitialiser votre mot de passe</h2>
+      <p class="text-muted mb-4">Entrez votre adresse email pour recevoir un code de réinitialisation</p>
+
+      <!-- ✅ id corrigé pour matcher le JS -->
+      <form id="password-reset-form">
+        <div class="mb-3">
+          <label for="email" class="form-label fw-semibold">Adresse Email</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+            <input type="email" id="email" class="form-control border-start-0" placeholder="votre@email.com" required />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Code de confirmation</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+            <input type="text" class="form-control border-start-0" placeholder="Votre code" required />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Nouveau mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-lock-open text-muted"></i></span>
+            <input type="password" class="form-control border-start-0" placeholder="Nouveau mot de passe" required />
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Confirmer le mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-lock text-muted"></i></span>
+            <input type="password" class="form-control border-start-0" placeholder="Confirmer" required />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 fw-semibold mb-3 shadow-sm">
+          Réinitialiser
+        </button>
+      </form>
+
+      <div class="text-center small">
+        Vous n'avez pas de compte ?
+        <a href="#" onclick="loadPage('inscription')" class="text-primary fw-semibold text-decoration-none">Inscrivez-vous</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Bootstrap + Custom -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/mot_de_passe_oub.js"></script>
+</body>
+</html>
