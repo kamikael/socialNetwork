@@ -30,3 +30,24 @@ L'ensemble de ces notions est utilisé dans le but d'offrir une application web 
 - password_hash / password_verify : Sécurisent les mots de passe en les chiffrant et en les vérifiant lors de la connexion.
 - header() : Gère les réponses HTTP (envoi de JSON, redirections après certaines actions, etc.).
 - try/catch : Gère les erreurs et exceptions pour éviter que l’application ne plante et fournir des messages d’erreur clairs au front.
+
+# Ajout du back-end
+
+ A présent le projet intègre également un back-end complet pour gérer l’authentification, l’inscription, la confirmation d’email et la réinitialisation de mot de passe.
+
+## Notions back-end (PHP) utilisées et leur but
+
+- PHP : Langage principal pour le traitement des requêtes, la logique métier et la communication avec la base de données.
+- Superglobales (`$_POST`, `$_GET`, `$_SERVER`) : Permettent de récupérer les données envoyées par le front (formulaires, requêtes AJAX, informations sur la requête).
+- PDO (PHP Data Objects) : Interface sécurisée pour accéder à la base de données MySQL, avec requêtes préparées pour éviter les injections SQL.
+- Gestion des mots de passe (`password_hash`, `password_verify`) : Sécurise les mots de passe utilisateurs en les chiffrant et en les vérifiant lors de la connexion.
+- PHPMailer : Librairie utilisée pour l’envoi d’emails (confirmation d’inscription, réinitialisation de mot de passe) via SMTP. Elle permet d’envoyer des emails de façon sécurisée et professionnelle, en gérant l’authentification auprès du serveur mail (Gmail, Outlook, etc.), le format HTML des messages, et la gestion des erreurs d’envoi. PHPMailer est appelée dans le code pour envoyer automatiquement un email à l’utilisateur lors de l’inscription (pour confirmer son compte) ou lors d’une demande de réinitialisation de mot de passe.
+- Gestion des en-têtes HTTP (`header()`) : Permet de renvoyer des réponses JSON, de gérer les redirections et les autorisations CORS.
+- Gestion des erreurs et exceptions (`try/catch`) : Permet de capturer et traiter proprement les erreurs, pour éviter les plantages et fournir des messages clairs au front.
+- Organisation modulaire : Séparation de la configuration (config.php, emailconf.php), de la logique métier (auth.php) et des dépendances (vendor/).
+
+## Objectif
+
+L’ensemble de ces notions et outils permet de garantir un back-end sécurisé, fiable et évolutif, capable de gérer toutes les opérations d’authentification et de communication avec le front-end. L’utilisation de standards modernes (PDO, PHPMailer, gestion des erreurs) assure la robustesse et la sécurité du projet.
+
+> Le back-end de ce projet applique les bonnes pratiques du développement PHP moderne : sécurité, modularité, gestion des erreurs, et communication efficace avec le front. Il complète l’interface utilisateur pour offrir une solution d’authentification complète et professionnelle.

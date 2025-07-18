@@ -84,7 +84,7 @@ function sendEmail($to, $subject, $bodyHtml, $bodyText = '') {
 
 function sendConfirmationEmail($email, $token, $nom, $prenom) {
     $subject = "Confirmation de votre compte - Réseau Social";
-    $confirmUrl = "http://" . $_SERVER['HTTP_HOST'] . "/cursoertp/api/auth.php?action=confirm&token=" . $token;
+    $confirmUrl = "http://" . $_SERVER['HTTP_HOST'] . "/api/auth.php?action=confirm&token=" . $token;
     
     $htmlContent = "
     <!DOCTYPE html>
