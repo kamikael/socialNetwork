@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques - Administration</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 4px 0;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+        .main-content {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .top-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #007bff;
+        }
+        .top-item:nth-child(1) { border-left-color: #ffc107; }
+        .top-item:nth-child(2) { border-left-color: #6c757d; }
+        .top-item:nth-child(3) { border-left-color: #fd7e14; }
+        #usersChart {
+  height: 200px;
+  max-height: 300px;
+}
+#articlesChart{
+  height: 200px;
+  max-height: 300px;
+}
+#rolesChart{
+  height: 200px;
+  max-height: 300px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar p-3">
+                    <div class="text-center mb-4">
+                        <h4 class="text-white mb-0">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Administration
+                        </h4>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link" href="dashboard.html">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Tableau de bord
+                        </a>
+                        <a class="nav-link" href="users.html">
+                            <i class="fas fa-users me-2"></i>
+                            Utilisateurs
+                        </a>
+                        <a class="nav-link" href="articles.html">
+                            <i class="fas fa-newspaper me-2"></i>
+                            Articles
+                        </a>
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-list-alt me-2"></i>
+                            Logs
+                        </a>
+                        <a class="nav-link active" href="stats.html">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Statistiques
+                        </a>
+                        <hr class="text-white">
+                        <a class="nav-link" href="../../index.html">
+                            <i class="fas fa-home me-2"></i>
+                            Retour au site
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">
+                        <i class="fas fa-chart-bar me-2 text-info"></i>
+                        Statistiques détaillées
+                    </h2>
+                    <div class="text-muted">
+                        <i class="fas fa-clock me-1"></i>
+                        <span id="last-update"></span>
+                    </div>
+                </div>
+                
+                <!-- Graphiques d'évolution -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="mb-3">
+                                <i class="fas fa-users me-2 text-primary"></i>
+                                Évolution des utilisateurs (30 jours)
+                            </h5>
+                            <canvas id="usersChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="mb-3">
+                                <i class="fas fa-newspaper me-2 text-success"></i>
+                                Évolution des articles (30 jours)
+                            </h5>
+                            <canvas id="articlesChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top utilisateurs et articles -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="mb-3">
+                                <i class="fas fa-trophy me-2 text-warning"></i>
+                                Top 10 des utilisateurs les plus actifs
+                            </h5>
+                            <div id="top-users-container">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border text-warning" role="status">
+                                        <span class="visually-hidden">Chargement...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="mb-3">
+                                <i class="fas fa-heart me-2 text-danger"></i>
+                                Top 10 des articles les plus populaires
+                            </h5>
+                            <div id="top-articles-container">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border text-danger" role="status">
+                                        <span class="visually-hidden">Chargement...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Répartition des rôles -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="mb-3">
+                                <i class="fas fa-pie-chart me-2 text-info"></i>
+                                Répartition des rôles utilisateurs
+                            </h5>
+                            <canvas id="rolesChart" width="400" height="300"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <h5 class="mb-3">
+                                <i class="fas fa-info-circle me-2 text-primary"></i>
+                                Informations générales
+                            </h5>
+                            <div id="general-stats">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Chargement...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/bootstrap.js"></script>
+    
+    
+    <script>
+        let usersChart, articlesChart, rolesChart;
+        
+        // Mettre à jour l'heure
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('last-update').textContent = now.toLocaleString('fr-FR');
+        }
+        
+        updateTime();
+        setInterval(updateTime, 1000);
+        
+        // Charger les statistiques
+        async function loadStats() {
+            try {
+                const response = await fetch('../../api/admin.php?action=stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    createUsersChart(data.users_by_day);
+                    createArticlesChart(data.articles_by_day);
+                    createRolesChart(data.roles_distribution);
+                    displayTopUsers(data.top_users);
+                    displayTopArticles(data.top_articles);
+                    displayGeneralStats(data);
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des statistiques:', error);
+            }
+        }
+        
+        // Créer le graphique des utilisateurs
+        function createUsersChart(usersData) {
+            const ctx = document.getElementById('usersChart').getContext('2d');
+            
+            if (usersChart) {
+                usersChart.destroy();
+            }
+            
+            const labels = usersData.map(item => item.date);
+            const data = usersData.map(item => item.count);
+            
+            usersChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Nouveaux utilisateurs',
+                        data: data,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Créer le graphique des articles
+        function createArticlesChart(articlesData) {
+            const ctx = document.getElementById('articlesChart').getContext('2d');
+            
+            if (articlesChart) {
+                articlesChart.destroy();
+            }
+            
+            const labels = articlesData.map(item => item.date);
+            const data = articlesData.map(item => item.count);
+            
+            articlesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Nouveaux articles',
+                        data: data,
+                        backgroundColor: '#28a745',
+                        borderColor: '#28a745',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Créer le graphique des rôles
+        function createRolesChart(rolesData) {
+            const ctx = document.getElementById('rolesChart').getContext('2d');
+            
+            if (rolesChart) {
+                rolesChart.destroy();
+            }
+            
+            const labels = rolesData.map(item => item.role === 'admininstrateur' ? 'Administrateurs' : 'Utilisateurs');
+            const data = rolesData.map(item => item.count);
+            const colors = ['#007bff', '#dc3545'];
+            
+            rolesChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Afficher les top utilisateurs
+        function displayTopUsers(users) {
+            const usersHtml = users.map((user, index) => `
+                <div class="top-item">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <span class="badge bg-${index < 3 ? 'warning' : 'secondary'}">${index + 1}</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">${user.prenom} ${user.nom}</h6>
+                            <small class="text-muted">${user.articles_count} articles publiés</small>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('top-users-container').innerHTML = usersHtml;
+        }
+        
+        // Afficher les top articles
+        function displayTopArticles(articles) {
+            const articlesHtml = articles.map((article, index) => `
+                <div class="top-item">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <span class="badge bg-${index < 3 ? 'danger' : 'secondary'}">${index + 1}</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">${article.titre}</h6>
+                            <small class="text-muted">Par ${article.prenom} ${article.nom}</small>
+                            <br>
+                            <small class="text-muted">
+                                <i class="fas fa-heart text-danger me-1"></i>
+                                ${article.likes_count} likes
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('top-articles-container').innerHTML = articlesHtml;
+        }
+        
+        // Afficher les statistiques générales
+        function displayGeneralStats(data) {
+            const totalUsers = data.roles_distribution.reduce((sum, role) => sum + role.count, 0);
+            const totalArticles = data.top_articles.reduce((sum, article) => sum + article.likes_count, 0);
+            
+            const statsHtml = `
+                <div class="row text-center">
+                    <div class="col-6 mb-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-primary mb-1">${totalUsers}</h4>
+                            <small class="text-muted">Utilisateurs total</small>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-success mb-1">${data.top_articles.length}</h4>
+                            <small class="text-muted">Articles populaires</small>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-warning mb-1">${data.top_users.length}</h4>
+                            <small class="text-muted">Utilisateurs actifs</small>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="p-3 bg-light rounded">
+                            <h4 class="text-info mb-1">${totalArticles}</h4>
+                            <small class="text-muted">Likes total</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Statistiques mises à jour en temps réel
+                    </small>
+                </div>
+            `;
+            
+            document.getElementById('general-stats').innerHTML = statsHtml;
+        }
+        
+        // Charger les statistiques au démarrage
+        loadStats();
+        
+        // Actualiser toutes les 5 minutes
+        setInterval(loadStats, 300000);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion Avancée des Utilisateurs - Administration</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .sidebar {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.8);
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin: 4px 0;
+        transition: all 0.3s;
+      }
+      .sidebar .nav-link:hover,
+      .sidebar .nav-link.active {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+      }
+      .main-content {
+        background: #f8f9fa;
+        min-height: 100vh;
+      }
+      .user-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        margin-bottom: 20px;
+        border-left: 4px solid #007bff;
+      }
+      .user-card:hover {
+        transform: translateY(-5px);
+      }
+      .user-card.suspended {
+        border-left-color: #dc3545;
+      }
+      .user-card.verified {
+        border-left-color: #28a745;
+      }
+      .search-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .pagination-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .user-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .filter-badge {
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .filter-badge:hover {
+        transform: scale(1.05);
+      }
+      .filter-badge.active {
+        background-color: #007bff !important;
+      }
+      .status-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
+      .status-online {
+        background-color: #28a745;
+      }
+      .status-offline {
+        background-color: #6c757d;
+      }
+      .status-suspended {
+        background-color: #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 px-0">
+          <div class="sidebar p-3">
+            <div class="text-center mb-4">
+              <h4 class="text-white mb-0">
+                <i class="fas fa-shield-alt me-2"></i>
+                Administration
+              </h4>
+            </div>
+
+            <nav class="nav flex-column">
+              <a class="nav-link" href="dashboard.html">
+                <i class="fas fa-tachometer-alt me-2"></i>
+                Tableau de bord
+              </a>
+              <a class="nav-link" href="users.html">
+                <i class="fas fa-users me-2"></i>
+                Utilisateurs
+              </a>
+              <a class="nav-link active" href="gestion_utilisateurs.html">
+                <i class="fas fa-user-cog me-2"></i>
+                Gestion Utilisateurs
+              </a>
+              <a class="nav-link" href="articles.html">
+                <i class="fas fa-newspaper me-2"></i>
+                Articles
+              </a>
+              <a class="nav-link" href="logs.html">
+                <i class="fas fa-list-alt me-2"></i>
+                Logs
+              </a>
+              <a class="nav-link" href="stats.html">
+                <i class="fas fa-chart-bar me-2"></i>
+                Statistiques
+              </a>
+              <hr class="text-white" />
+              <a class="nav-link" href="../../index.html">
+                <i class="fas fa-home me-2"></i>
+                Retour au site
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 main-content p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">
+              <i class="fas fa-user-cog me-2 text-primary"></i>
+              Gestion Avancée des Utilisateurs
+            </h2>
+            <div class="text-muted">
+              <span id="total-users-count">0</span> utilisateurs au total
+            </div>
+          </div>
+
+          <!-- Statistiques rapides -->
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div class="stats-card text-center">
+                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                <h4 id="total-users">0</h4>
+                <small class="text-muted">Utilisateurs total</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stats-card text-center">
+                <i class="fas fa-user-check fa-2x text-success mb-2"></i>
+                <h4 id="active-users">0</h4>
+                <small class="text-muted">Utilisateurs actifs</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stats-card text-center">
+                <i class="fas fa-user-clock fa-2x text-warning mb-2"></i>
+                <h4 id="new-users">0</h4>
+                <small class="text-muted">Nouveaux (30j)</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stats-card text-center">
+                <i class="fas fa-user-slash fa-2x text-danger mb-2"></i>
+                <h4 id="suspended-users">0</h4>
+                <small class="text-muted">Suspendus</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filtres et recherche -->
+          <div class="search-container">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="search-input" class="form-label">
+                  <i class="fas fa-search me-2"></i>
+                  Rechercher
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="search-input"
+                  placeholder="Nom, prénom ou email..."
+                />
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="role-filter" class="form-label">
+                  <i class="fas fa-filter me-2"></i>
+                  Rôle
+                </label>
+                <select class="form-select" id="role-filter">
+                  <option value="">Tous les rôles</option>
+                  <option value="user">Utilisateur</option>
+                  <option value="admin">Administrateur</option>
+                </select>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label for="status-filter" class="form-label">
+                  <i class="fas fa-user-check me-2"></i>
+                  Statut
+                </label>
+                <select class="form-select" id="status-filter">
+                  <option value="">Tous les statuts</option>
+                  <option value="active">Actif</option>
+                  <option value="suspended">Suspendu</option>
+                  <option value="unverified">Non vérifié</option>
+                </select>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label class="form-label">&nbsp;</label>
+                <button class="btn btn-primary w-100" onclick="loadUsers()">
+                  <i class="fas fa-search me-2"></i>
+                  Rechercher
+                </button>
+              </div>
+              <div class="col-md-2 mb-3">
+                <label class="form-label">&nbsp;</label>
+                <button
+                  class="btn btn-outline-secondary w-100"
+                  onclick="exportUsers()"
+                >
+                  <i class="fas fa-download me-2"></i>
+                  Exporter
+                </button>
+              </div>
+            </div>
+
+            <!-- Filtres rapides -->
+            <div class="mt-3">
+              <label class="form-label">Filtres rapides :</label>
+              <div class="d-flex flex-wrap gap-2">
+                <span
+                  class="badge bg-primary filter-badge"
+                  onclick="setQuickFilter('recent')"
+                >
+                  <i class="fas fa-clock me-1"></i>Récents
+                </span>
+                <span
+                  class="badge bg-success filter-badge"
+                  onclick="setQuickFilter('active')"
+                >
+                  <i class="fas fa-user-check me-1"></i>Actifs
+                </span>
+                <span
+                  class="badge bg-warning filter-badge"
+                  onclick="setQuickFilter('suspended')"
+                >
+                  <i class="fas fa-user-slash me-1"></i>Suspendus
+                </span>
+                <span
+                  class="badge bg-info filter-badge"
+                  onclick="setQuickFilter('top')"
+                >
+                  <i class="fas fa-trophy me-1"></i>Top contributeurs
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions en lot -->
+          <div class="mb-3">
+            <div class="btn-group" role="group">
+              <button
+                class="btn btn-outline-success"
+                onclick="bulkAction('activate')"
+              >
+                <i class="fas fa-user-check me-2"></i>Activer
+              </button>
+              <button
+                class="btn btn-outline-warning"
+                onclick="bulkAction('suspend')"
+              >
+                <i class="fas fa-user-slash me-2"></i>Suspendre
+              </button>
+              <button
+                class="btn btn-outline-info"
+                onclick="bulkAction('verify')"
+              >
+                <i class="fas fa-check-circle me-2"></i>Vérifier
+              </button>
+              <button
+                class="btn btn-outline-danger"
+                onclick="bulkAction('delete')"
+              >
+                <i class="fas fa-trash me-2"></i>Supprimer
+              </button>
+            </div>
+            <div class="form-check ms-3 d-inline-block">
+              <input class="form-check-input" type="checkbox" id="select-all" />
+              <label class="form-check-label" for="select-all">
+                Tout sélectionner
+              </label>
+            </div>
+          </div>
+
+          <!-- Liste des utilisateurs -->
+          <div id="users-container">
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Chargement...</span>
+              </div>
+              <p class="mt-3">Chargement des utilisateurs...</p>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            class="pagination-container"
+            id="pagination-container"
+            style="display: none"
+          >
+            <nav aria-label="Navigation des utilisateurs">
+              <ul
+                class="pagination justify-content-center mb-0"
+                id="pagination"
+              ></ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de modération d'utilisateur -->
+    <div class="modal fade" id="moderateUserModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fas fa-user-cog me-2"></i>
+              Modérer l'utilisateur
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="user-details"></div>
+            <hr />
+            <div class="mb-3">
+              <label for="moderation-action" class="form-label"
+                >Action de modération</label
+              >
+              <select class="form-select" id="moderation-action">
+                <option value="activate">Activer le compte</option>
+                <option value="suspend">Suspendre temporairement</option>
+                <option value="verify">Vérifier l'email</option>
+                <option value="delete">Supprimer définitivement</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="moderation-reason" class="form-label"
+                >Raison (optionnel)</label
+              >
+              <textarea
+                class="form-control"
+                id="moderation-reason"
+                rows="3"
+                placeholder="Expliquez la raison de cette action..."
+              ></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="moderation-duration" class="form-label"
+                >Durée de suspension (si applicable)</label
+              >
+              <select class="form-select" id="moderation-duration">
+                <option value="1">1 jour</option>
+                <option value="7">1 semaine</option>
+                <option value="30">1 mois</option>
+                <option value="permanent">Permanent</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="applyUserModeration()"
+            >
+              <i class="fas fa-save me-2"></i>
+              Appliquer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              Confirmer la suppression
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
+            <p class="text-muted">
+              Cette action est irréversible et supprimera toutes les données
+              associées.
+            </p>
+            <div id="user-to-delete-info"></div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="confirmDeleteUser()"
+            >
+              <i class="fas fa-trash me-2"></i>
+              Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/bootstrap.js"></script>
+
+    <script>
+      let currentPage = 1;
+      let totalPages = 1;
+      let userToDelete = null;
+      let selectedUsers = new Set();
+      let currentFilter = "";
+
+      // Charger les utilisateurs
+      async function loadUsers(page = 1) {
+        const search = document.getElementById("search-input").value;
+        const role = document.getElementById("role-filter").value;
+        const status = document.getElementById("status-filter").value;
+
+        try {
+          const params = new URLSearchParams({
+            action: "users",
+            page: page,
+            limit: 10,
+          });
+
+          if (search) params.append("search", search);
+          if (role) params.append("role", role);
+          if (status) params.append("status", status);
+          if (currentFilter) params.append("filter", currentFilter);
+
+          const response = await fetch(`/app/api/admin.php?${params}`);
+          const data = await response.json();
+
+          if (data.success) {
+            displayUsers(data.users);
+            displayPagination(data.page, data.total_pages);
+            document.getElementById("total-users-count").textContent =
+              data.total;
+            updateStats();
+          }
+        } catch (error) {
+          console.error("Erreur lors du chargement des utilisateurs:", error);
+          document.getElementById("users-container").innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Erreur lors du chargement des utilisateurs
+                    </div>
+                `;
+        }
+      }
+
+      // Afficher les utilisateurs
+      function displayUsers(users) {
+        if (users.length === 0) {
+          document.getElementById("users-container").innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Aucun utilisateur trouvé</h5>
+                    </div>
+                `;
+          return;
+        }
+
+        const usersHtml = users
+          .map((user) => {
+            const statusClass = user.suspended
+              ? "suspended"
+              : user.email_verified_at
+              ? "verified"
+              : "";
+            const statusIndicator = user.suspended
+              ? "status-suspended"
+              : user.last_login
+              ? "status-online"
+              : "status-offline";
+            const statusText = user.suspended
+              ? "Suspendu"
+              : user.last_login
+              ? "En ligne"
+              : "Hors ligne";
+
+            return `
+                    <div class="user-card p-3 ${statusClass}">
+                        <div class="row">
+                            <div class="col-md-1">
+                                <div class="form-check">
+                                    <input class="form-check-input user-checkbox" type="checkbox" 
+                                           value="${
+                                             user.id
+                                           }" onchange="toggleUserSelection(${
+              user.id
+            })">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-3 mb-3 mb-sm-0">
+                                <div class="d-flex align-items-center">
+                                    <img src="${
+                                      user.avatar ||
+                                      "/app//assets/images/default-avatar.png"
+                                    }" 
+                                         alt="Avatar" class="user-avatar me-3">
+                                    <div>
+                                        <h6 class="mb-1">${user.prenom} ${
+              user.nom
+            }</h6>
+                                        <small class="text-muted">${
+                                          user.email
+                                        }</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-3 mb-3 mb-sm-0">
+                                <span class="badge bg-${
+                                  user.role === "admin" ? "danger" : "secondary"
+                                }">${user.role}</span>
+                                <br>
+                                <small class="text-muted">
+                                    <span class="status-indicator ${statusIndicator}"></span>
+                                    ${statusText}
+                                </small>
+                            </div>
+                            <div class="col-md-2 col-sm-3 mb-3 mb-sm-0">
+                                <small class="text-muted">
+                                    <i class="fas fa-newspaper me-1"></i>
+                                    ${user.articles_count} articles
+                                </small>
+                                <br>
+                                <small class="text-muted">
+                                    <i class="fas fa-comments me-1"></i>
+                                    ${user.comments_count} commentaires
+                                </small>
+                            </div>
+                            <div class="col-md-3 col-sm-3 mb-3 mb-sm-0">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    Inscrit le ${new Date(
+                                      user.created_at
+                                    ).toLocaleDateString("fr-FR")}
+                                </small>
+                                <br>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Dernière connexion: ${
+                                      user.last_login
+                                        ? new Date(
+                                            user.last_login
+                                          ).toLocaleDateString("fr-FR")
+                                        : "Jamais"
+                                    }
+                                </small>
+                                ${
+                                  user.email_verified_at
+                                    ? '<br><small class="text-success"><i class="fas fa-check-circle me-1"></i>Email vérifié</small>'
+                                    : ""
+                                }
+                            </div>
+                            <div class="col-md-2 col-sm-12">
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="viewUserProfile(${
+                                      user.id
+                                    })">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-outline-warning btn-sm" onclick="moderateUser(${
+                                      user.id
+                                    })">
+                                        <i class="fas fa-user-cog"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-sm" onclick="deleteUser(${
+                                      user.id
+                                    }, '${user.prenom}', '${user.nom}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          })
+          .join("");
+
+        document.getElementById("users-container").innerHTML = usersHtml;
+      }
+
+      // Afficher la pagination
+      function displayPagination(currentPage, totalPages) {
+        if (totalPages <= 1) {
+          document.getElementById("pagination-container").style.display =
+            "none";
+          return;
+        }
+
+        document.getElementById("pagination-container").style.display = "block";
+
+        let paginationHtml = "";
+
+        // Bouton précédent
+        if (currentPage > 1) {
+          paginationHtml += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="loadUsers(${
+                          currentPage - 1
+                        })">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                `;
+        }
+
+        // Pages
+        for (
+          let i = Math.max(1, currentPage - 2);
+          i <= Math.min(totalPages, currentPage + 2);
+          i++
+        ) {
+          paginationHtml += `
+                    <li class="page-item ${i === currentPage ? "active" : ""}">
+                        <a class="page-link" href="#" onclick="loadUsers(${i})">${i}</a>
+                    </li>
+                `;
+        }
+
+        // Bouton suivant
+        if (currentPage < totalPages) {
+          paginationHtml += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="loadUsers(${
+                          currentPage + 1
+                        })">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                `;
+        }
+
+        document.getElementById("pagination").innerHTML = paginationHtml;
+      }
+
+      // Mettre à jour les statistiques
+      async function updateStats() {
+        try {
+          const response = await fetch("/app/api/admin.php?action=dashboard");
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById("total-users").textContent =
+              data.stats.total_users;
+            document.getElementById("active-users").textContent =
+              data.stats.active_users;
+            // Note: Ces valeurs nécessiteraient des calculs spécifiques
+            document.getElementById("new-users").textContent = "0";
+            document.getElementById("suspended-users").textContent = "0";
+          }
+        } catch (error) {
+          console.error("Erreur lors du chargement des statistiques:", error);
+        }
+      }
+
+      // Définir un filtre rapide
+      function setQuickFilter(filter) {
+        currentFilter = filter;
+
+        // Mettre à jour l'apparence des badges
+        document.querySelectorAll(".filter-badge").forEach((badge) => {
+          badge.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        loadUsers(1);
+      }
+
+      // Basculer la sélection d'un utilisateur
+      function toggleUserSelection(userId) {
+        if (selectedUsers.has(userId)) {
+          selectedUsers.delete(userId);
+        } else {
+          selectedUsers.add(userId);
+        }
+
+        updateSelectAllCheckbox();
+      }
+
+      // Mettre à jour la checkbox "Tout sélectionner"
+      function updateSelectAllCheckbox() {
+        const checkboxes = document.querySelectorAll(".user-checkbox");
+        const selectAllCheckbox = document.getElementById("select-all");
+
+        const checkedCount = Array.from(checkboxes).filter(
+          (cb) => cb.checked
+        ).length;
+
+        if (checkedCount === 0) {
+          selectAllCheckbox.indeterminate = false;
+          selectAllCheckbox.checked = false;
+        } else if (checkedCount === checkboxes.length) {
+          selectAllCheckbox.indeterminate = false;
+          selectAllCheckbox.checked = true;
+        } else {
+          selectAllCheckbox.indeterminate = true;
+        }
+      }
+
+      // Action en lot
+      function bulkAction(action) {
+        if (selectedUsers.size === 0) {
+          showAlert("Veuillez sélectionner au moins un utilisateur", "warning");
+          return;
+        }
+
+        const actionText = {
+          activate: "activer",
+          suspend: "suspendre",
+          verify: "vérifier",
+          delete: "supprimer",
+        }[action];
+
+        if (
+          confirm(
+            `Êtes-vous sûr de vouloir ${actionText} ${selectedUsers.size} utilisateur(s) ?`
+          )
+        ) {
+          // Implémenter l'action en lot
+          showAlert(
+            `${selectedUsers.size} utilisateur(s) ${actionText} avec succès`,
+            "success"
+          );
+          selectedUsers.clear();
+          loadUsers(currentPage);
+        }
+      }
+
+      // Voir le profil d'un utilisateur
+      function viewUserProfile(userId) {
+        window.open(`../../vues/clients/profil.html?id=${userId}`, "_blank");
+      }
+
+      // Modérer un utilisateur
+      function moderateUser(userId) {
+        // Charger les détails de l'utilisateur
+        document.getElementById("user-details").innerHTML = `
+                <h6>Utilisateur ID: ${userId}</h6>
+                <p class="text-muted">Chargement des détails...</p>
+            `;
+
+        new bootstrap.Modal(
+          document.getElementById("moderateUserModal")
+        ).show();
+      }
+
+      // Appliquer la modération d'utilisateur
+      function applyUserModeration() {
+        const action = document.getElementById("moderation-action").value;
+        const reason = document.getElementById("moderation-reason").value;
+        const duration = document.getElementById("moderation-duration").value;
+
+        // Implémenter la logique de modération
+        showAlert("Action de modération appliquée avec succès", "success");
+        bootstrap.Modal.getInstance(
+          document.getElementById("moderateUserModal")
+        ).hide();
+        loadUsers(currentPage);
+      }
+
+      // Exporter les utilisateurs
+      function exportUsers() {
+        const search = document.getElementById("search-input").value;
+        const role = document.getElementById("role-filter").value;
+        const status = document.getElementById("status-filter").value;
+
+        let url = "../../api/admin.php?action=users&limit=1000";
+
+        if (search) url += `&search=${search}`;
+        if (role) url += `&role=${role}`;
+        if (status) url += `&status=${status}`;
+        if (currentFilter) url += `&filter=${currentFilter}`;
+
+        // Créer un lien temporaire pour télécharger
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `users_${new Date().toISOString().split("T")[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showAlert("Export des utilisateurs en cours...", "info");
+      }
+
+      // Supprimer un utilisateur
+      function deleteUser(id, prenom, nom) {
+        userToDelete = { id, prenom, nom };
+        document.getElementById("user-to-delete-info").innerHTML = `
+                <div class="alert alert-warning">
+                    <strong>${prenom} ${nom}</strong> (ID: ${id})
+                </div>
+            `;
+        new bootstrap.Modal(document.getElementById("deleteUserModal")).show();
+      }
+
+      // Confirmer la suppression
+      async function confirmDeleteUser() {
+        if (!userToDelete) return;
+
+        try {
+          const response = await fetch(
+            `../../api/admin.php?action=delete_user&user_id=${userToDelete.id}`
+          );
+          const data = await response.json();
+
+          if (data.success) {
+            bootstrap.Modal.getInstance(
+              document.getElementById("deleteUserModal")
+            ).hide();
+            loadUsers(currentPage);
+            showAlert("Utilisateur supprimé avec succès", "success");
+          } else {
+            showAlert(data.error || "Erreur lors de la suppression", "danger");
+          }
+        } catch (error) {
+          console.error("Erreur lors de la suppression:", error);
+          showAlert("Erreur lors de la suppression", "danger");
+        }
+      }
+
+      // Afficher une alerte
+      function showAlert(message, type) {
+        const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+        const alertContainer = document.createElement("div");
+        alertContainer.style.position = "fixed";
+        alertContainer.style.top = "20px";
+        alertContainer.style.right = "20px";
+        alertContainer.style.zIndex = "9999";
+        alertContainer.innerHTML = alertHtml;
+
+        document.body.appendChild(alertContainer);
+
+        setTimeout(() => {
+          alertContainer.remove();
+        }, 5000);
+      }
+
+      // Gérer la checkbox "Tout sélectionner"
+      document
+        .getElementById("select-all")
+        .addEventListener("change", function () {
+          const checkboxes = document.querySelectorAll(".user-checkbox");
+          checkboxes.forEach((checkbox) => {
+            checkbox.checked = this.checked;
+            if (this.checked) {
+              selectedUsers.add(parseInt(checkbox.value));
+            } else {
+              selectedUsers.delete(parseInt(checkbox.value));
+            }
+          });
+        });
+
+      // Recherche en temps réel
+      let searchTimeout;
+      document
+        .getElementById("search-input")
+        .addEventListener("input", function () {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            loadUsers(1);
+          }, 500);
+        });
+
+      // Filtres
+      document
+        .getElementById("role-filter")
+        .addEventListener("change", function () {
+          loadUsers(1);
+        });
+
+      document
+        .getElementById("status-filter")
+        .addEventListener("change", function () {
+          loadUsers(1);
+        });
+
+      // Charger les utilisateurs au démarrage
+      loadUsers();
+    </script>
+  </body>
+</html>

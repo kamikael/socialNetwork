@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Administration</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+        }
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .login-body {
+            padding: 40px 30px;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+        .back-link {
+            color: white;
+            text-decoration: none;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            transform: translateX(-5px);
+        }
+    </style>
+</head>
+<body>
+    <a href="../../index.html" class="back-link">
+        <i class="fas fa-arrow-left me-2"></i>
+        Retour au site
+    </a>
+
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-shield-alt fa-3x mb-3"></i>
+            <h3 class="mb-0">Administration</h3>
+            <p class="mb-0 opacity-75">Connexion sécurisée</p>
+        </div>
+        
+        <div class="login-body">
+            <div id="alert-container"></div>
+            
+            <form id="login-form">
+                <div class="mb-3">
+                    <label for="email" class="form-label">
+                        <i class="fas fa-envelope me-2"></i>
+                        Email
+                    </label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock me-2"></i>
+                        Mot de passe
+                    </label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" required>
+                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="password-icon"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-login text-white w-100 mb-3">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    Se connecter
+                </button>
+                
+                <div class="text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Accès réservé aux administrateurs
+                    </small>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../assets/js/bootstrap.js"></script>
+    <script>
+        // Basculer la visibilité du mot de passe
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const passwordIcon = document.getElementById('password-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordIcon.classList.remove('fa-eye');
+                passwordIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordIcon.classList.remove('fa-eye-slash');
+                passwordIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Gérer la soumission du formulaire
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            
+            // Vérification côté client
+            if (!email || !password) {
+                showAlert('Veuillez remplir tous les champs.', 'danger');
+                return;
+            }
+            // Vérification du format de l'email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('Veuillez entrer une adresse email valide.', 'danger');
+                return;
+            }
+            
+            // Désactiver le bouton pendant la connexion
+            const submitBtn = document.querySelector('.btn-login');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Connexion...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('../../api/admin_auth.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'login',
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Vérifier si l'utilisateur est admin
+                    if (data.user && data.user.role && data.user.role.trim().toLowerCase() === 'administrateur') {
+                        // Stocker les informations de session
+                        sessionStorage.setItem('admin_user', JSON.stringify(data.user));
+                        sessionStorage.setItem('admin_token', data.token);
+                        console.log('Stockage admin_user:', data.user);
+                        console.log('Stockage admin_token:', data.token);
+                        // Rediriger vers le tableau de bord
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        console.error('Rôle utilisateur non administrateur:', data.user ? data.user.role : null);
+                        showAlert('Accès refusé. Seuls les administrateurs peuvent accéder au back-office.', 'danger');
+                    }
+                } else {
+                    showAlert(data.error || 'Erreur de connexion', 'danger');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la connexion:', error);
+                showAlert('Erreur de connexion au serveur', 'danger');
+            } finally {
+                // Réactiver le bouton
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Afficher une alerte
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alert-container');
+            const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            alertContainer.innerHTML = alertHtml;
+            
+            // Auto-fermer après 5 secondes
+            setTimeout(() => {
+                const alert = alertContainer.querySelector('.alert');
+                if (alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 5000);
+        }
+        
+        // Vérifier si déjà connecté
+        window.addEventListener('load', function() {
+            const adminUser = sessionStorage.getItem('admin_user');
+            if (adminUser) {
+                const user = JSON.parse(adminUser);
+                if (user.role === 'administrateur') {
+                    window.location.href = 'dashboard.html';
+                }
+            }
+        });
+        
+        // (SUPPRIMER) Entrée pour soumettre le formulaire
+        // document.addEventListener('keypress', function(e) {
+        //     if (e.key === 'Enter') {
+        //         document.getElementById('login-form').dispatchEvent(new Event('submit'));
+        //     }
+        // });
+    </script>
+</body>
+</html>

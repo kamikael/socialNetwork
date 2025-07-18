@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des Administrateurs - Administration</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .sidebar {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.8);
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin: 4px 0;
+        transition: all 0.3s;
+      }
+      .sidebar .nav-link:hover,
+      .sidebar .nav-link.active {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+      }
+      .main-content {
+        background: #f8f9fa;
+        min-height: 100vh;
+      }
+      .admin-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        margin-bottom: 20px;
+        border-left: 4px solid #dc3545;
+      }
+      .admin-card:hover {
+        transform: translateY(-5px);
+      }
+      .search-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      .pagination-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .admin-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .permission-badge {
+        font-size: 0.8em;
+        padding: 4px 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 px-0">
+          <div class="sidebar p-3">
+            <div class="text-center mb-4">
+              <h4 class="text-white mb-0">
+                <i class="fas fa-shield-alt me-2"></i>
+                Administration
+              </h4>
+            </div>
+
+            <nav class="nav flex-column">
+              <a class="nav-link" href="dashboard.html">
+                <i class="fas fa-tachometer-alt me-2"></i>
+                Tableau de bord
+              </a>
+              <a class="nav-link" href="users.html">
+                <i class="fas fa-users me-2"></i>
+                Utilisateurs
+              </a>
+              <a class="nav-link" href="articles.html">
+                <i class="fas fa-newspaper me-2"></i>
+                Articles
+              </a>
+              <a class="nav-link" href="logs.html">
+                <i class="fas fa-list-alt me-2"></i>
+                Logs
+              </a>
+              <a class="nav-link" href="stats.html">
+                <i class="fas fa-chart-bar me-2"></i>
+                Statistiques
+              </a>
+              <a class="nav-link active" href="gestion_admins.html">
+                <i class="fas fa-user-shield me-2"></i>
+                Administrateurs
+              </a>
+              <hr class="text-white" />
+              <a class="nav-link" href="../../index.html">
+                <i class="fas fa-home me-2"></i>
+                Retour au site
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 main-content p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">
+              <i class="fas fa-user-shield me-2 text-danger"></i>
+              Gestion des Administrateurs
+            </h2>
+            <button class="btn btn-danger" onclick="showCreateAdminModal()">
+              <i class="fas fa-plus me-2"></i>
+              Nouvel Administrateur
+            </button>
+          </div>
+
+          <!-- Barre de recherche -->
+          <div class="search-container">
+            <div class="row">
+              <div class="col-md-8 mb-3">
+                <label for="search-input" class="form-label">
+                  <i class="fas fa-search me-2"></i>
+                  Rechercher
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="search-input"
+                  placeholder="Nom, prénom ou email..."
+                />
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">&nbsp;</label>
+                <button class="btn btn-danger w-100" onclick="loadAdmins()">
+                  <i class="fas fa-search me-2"></i>
+                  Rechercher
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Liste des administrateurs -->
+          <div id="admins-container">
+            <div class="text-center py-5">
+              <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Chargement...</span>
+              </div>
+              <p class="mt-3">Chargement des administrateurs...</p>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            class="pagination-container"
+            id="pagination-container"
+            style="display: none"
+          >
+            <nav aria-label="Navigation des administrateurs">
+              <ul
+                class="pagination justify-content-center mb-0"
+                id="pagination"
+              ></ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de création d'administrateur -->
+    <div class="modal fade" id="createAdminModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fas fa-user-plus me-2"></i>
+              Nouvel Administrateur
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="create-admin-form">
+              <div class="mb-3">
+                <label for="create-nom" class="form-label">Nom</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="create-nom"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="create-prenom" class="form-label">Prénom</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="create-prenom"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="create-email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="create-email"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="create-password" class="form-label"
+                  >Mot de passe</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="create-password"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="create-confirm-password" class="form-label"
+                  >Confirmer le mot de passe</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="create-confirm-password"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="create-permissions" class="form-label"
+                  >Permissions</label
+                >
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="perm-users"
+                    checked
+                  />
+                  <label class="form-check-label" for="perm-users">
+                    Gestion des utilisateurs
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="perm-articles"
+                    checked
+                  />
+                  <label class="form-check-label" for="perm-articles">
+                    Gestion des articles
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="perm-logs"
+                    checked
+                  />
+                  <label class="form-check-label" for="perm-logs">
+                    Consultation des logs
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="perm-stats"
+                    checked
+                  />
+                  <label class="form-check-label" for="perm-stats">
+                    Accès aux statistiques
+                  </label>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="createAdmin()"
+            >
+              <i class="fas fa-save me-2"></i>
+              Créer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal d'édition d'administrateur -->
+    <div class="modal fade" id="editAdminModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fas fa-edit me-2"></i>
+              Modifier l'Administrateur
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="edit-admin-form">
+              <input type="hidden" id="edit-admin-id" />
+              <div class="mb-3">
+                <label for="edit-nom" class="form-label">Nom</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="edit-nom"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="edit-prenom" class="form-label">Prénom</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="edit-prenom"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="edit-email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="edit-email"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="edit-new-password" class="form-label"
+                  >Nouveau mot de passe (optionnel)</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="edit-new-password"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="edit-permissions" class="form-label"
+                  >Permissions</label
+                >
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="edit-perm-users"
+                  />
+                  <label class="form-check-label" for="edit-perm-users">
+                    Gestion des utilisateurs
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="edit-perm-articles"
+                  />
+                  <label class="form-check-label" for="edit-perm-articles">
+                    Gestion des articles
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="edit-perm-logs"
+                  />
+                  <label class="form-check-label" for="edit-perm-logs">
+                    Consultation des logs
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="edit-perm-stats"
+                  />
+                  <label class="form-check-label" for="edit-perm-stats">
+                    Accès aux statistiques
+                  </label>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="updateAdmin()"
+            >
+              <i class="fas fa-save me-2"></i>
+              Enregistrer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de confirmation de suppression -->
+    <div class="modal fade" id="deleteAdminModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              Confirmer la suppression
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>Êtes-vous sûr de vouloir supprimer cet administrateur ?</p>
+            <p class="text-muted">
+              Cette action est irréversible et supprimera l'accès
+              administrateur.
+            </p>
+            <div id="admin-to-delete-info"></div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              onclick="confirmDeleteAdmin()"
+            >
+              <i class="fas fa-trash me-2"></i>
+              Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/bootstrap.js"></script>
+
+    <script>
+      let currentPage = 1;
+      let totalPages = 1;
+      let adminToDelete = null;
+
+      // Charger les administrateurs
+      async function loadAdmins(page = 1) {
+        const search = document.getElementById("search-input").value;
+
+        try {
+          const params = new URLSearchParams({
+            action: "users",
+            page: page,
+            limit: 10,
+            role: "admin",
+          });
+
+          if (search) params.append("search", search);
+
+          const response = await fetch(`/app/api/admin.php?${params}`);
+          const data = await response.json();
+
+          if (data.success) {
+            displayAdmins(data.users);
+            displayPagination(data.page, data.total_pages);
+          }
+        } catch (error) {
+          console.error(
+            "Erreur lors du chargement des administrateurs:",
+            error
+          );
+          document.getElementById("admins-container").innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Erreur lors du chargement des administrateurs
+                    </div>
+                `;
+        }
+      }
+
+      // Afficher les administrateurs
+      function displayAdmins(admins) {
+        if (admins.length === 0) {
+          document.getElementById("admins-container").innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-user-shield fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Aucun administrateur trouvé</h5>
+                    </div>
+                `;
+          return;
+        }
+
+        const adminsHtml = admins
+          .map(
+            (admin) => `
+                <div class="admin-card p-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-2 col-sm-3 mb-3 mb-sm-0">
+                            <div class="d-flex align-items-center">
+                                <img src="${
+                                  admin.avatar ||
+                                  "/app//assets/images/default-avatar.png"
+                                }" 
+                                     alt="Avatar" class="admin-avatar me-3">
+                                <div>
+                                    <h6 class="mb-1">${admin.prenom} ${
+              admin.nom
+            }</h6>
+                                    <small class="text-muted">${
+                                      admin.email
+                                    }</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-3 mb-3 mb-sm-0">
+                            <span class="badge bg-danger">Administrateur</span>
+                        </div>
+                        <div class="col-md-2 col-sm-3 mb-3 mb-sm-0">
+                            <small class="text-muted">
+                                <i class="fas fa-newspaper me-1"></i>
+                                ${admin.articles_count} articles
+                            </small>
+                            <br>
+                            <small class="text-muted">
+                                <i class="fas fa-comments me-1"></i>
+                                ${admin.comments_count} commentaires
+                            </small>
+                        </div>
+                        <div class="col-md-3 col-sm-3 mb-3 mb-sm-0">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>
+                                Inscrit le ${new Date(
+                                  admin.created_at
+                                ).toLocaleDateString("fr-FR")}
+                            </small>
+                            <br>
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                Dernière connexion: ${
+                                  admin.last_login
+                                    ? new Date(
+                                        admin.last_login
+                                      ).toLocaleDateString("fr-FR")
+                                    : "Jamais"
+                                }
+                            </small>
+                        </div>
+                        <div class="col-md-3 col-sm-12">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-primary btn-sm" onclick="editAdmin(${
+                                  admin.id
+                                }, '${admin.nom}', '${admin.prenom}', '${
+              admin.email
+            }')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-outline-danger btn-sm" onclick="deleteAdmin(${
+                                  admin.id
+                                }, '${admin.prenom}', '${admin.nom}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+
+        document.getElementById("admins-container").innerHTML = adminsHtml;
+      }
+
+      // Afficher la pagination
+      function displayPagination(currentPage, totalPages) {
+        if (totalPages <= 1) {
+          document.getElementById("pagination-container").style.display =
+            "none";
+          return;
+        }
+
+        document.getElementById("pagination-container").style.display = "block";
+
+        let paginationHtml = "";
+
+        // Bouton précédent
+        if (currentPage > 1) {
+          paginationHtml += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="loadAdmins(${
+                          currentPage - 1
+                        })">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                `;
+        }
+
+        // Pages
+        for (
+          let i = Math.max(1, currentPage - 2);
+          i <= Math.min(totalPages, currentPage + 2);
+          i++
+        ) {
+          paginationHtml += `
+                    <li class="page-item ${i === currentPage ? "active" : ""}">
+                        <a class="page-link" href="#" onclick="loadAdmins(${i})">${i}</a>
+                    </li>
+                `;
+        }
+
+        // Bouton suivant
+        if (currentPage < totalPages) {
+          paginationHtml += `
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="loadAdmins(${
+                          currentPage + 1
+                        })">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                `;
+        }
+
+        document.getElementById("pagination").innerHTML = paginationHtml;
+      }
+
+      // Afficher le modal de création
+      function showCreateAdminModal() {
+        document.getElementById("create-admin-form").reset();
+        new bootstrap.Modal(document.getElementById("createAdminModal")).show();
+      }
+
+      // Créer un administrateur
+      async function createAdmin() {
+        const nom = document.getElementById("create-nom").value;
+        const prenom = document.getElementById("create-prenom").value;
+        const email = document.getElementById("create-email").value;
+        const password = document.getElementById("create-password").value;
+        const confirmPassword = document.getElementById(
+          "create-confirm-password"
+        ).value;
+
+        if (password !== confirmPassword) {
+          showAlert("Les mots de passe ne correspondent pas", "danger");
+          return;
+        }
+
+        try {
+          const response = await fetch("/app/api/auth.php?action=register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              nom: nom,
+              prenom: prenom,
+              email: email,
+              password: password,
+              role: "admin",
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            bootstrap.Modal.getInstance(
+              document.getElementById("createAdminModal")
+            ).hide();
+            loadAdmins(currentPage);
+            showAlert("Administrateur créé avec succès", "success");
+          } else {
+            showAlert(data.error || "Erreur lors de la création", "danger");
+          }
+        } catch (error) {
+          console.error("Erreur lors de la création:", error);
+          showAlert("Erreur lors de la création", "danger");
+        }
+      }
+
+      // Éditer un administrateur
+      function editAdmin(id, nom, prenom, email) {
+        document.getElementById("edit-admin-id").value = id;
+        document.getElementById("edit-nom").value = nom;
+        document.getElementById("edit-prenom").value = prenom;
+        document.getElementById("edit-email").value = email;
+        document.getElementById("edit-new-password").value = "";
+
+        new bootstrap.Modal(document.getElementById("editAdminModal")).show();
+      }
+
+      // Mettre à jour un administrateur
+      async function updateAdmin() {
+        const adminId = document.getElementById("edit-admin-id").value;
+        const nom = document.getElementById("edit-nom").value;
+        const prenom = document.getElementById("edit-prenom").value;
+        const email = document.getElementById("edit-email").value;
+        const newPassword = document.getElementById("edit-new-password").value;
+
+        try {
+          const response = await fetch(
+            "../../api/admin.php?action=update_user",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                user_id: adminId,
+                nom: nom,
+                prenom: prenom,
+                email: email,
+                role: "admin",
+                new_password: newPassword,
+              }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (data.success) {
+            bootstrap.Modal.getInstance(
+              document.getElementById("editAdminModal")
+            ).hide();
+            loadAdmins(currentPage);
+            showAlert("Administrateur mis à jour avec succès", "success");
+          } else {
+            showAlert(data.error || "Erreur lors de la mise à jour", "danger");
+          }
+        } catch (error) {
+          console.error("Erreur lors de la mise à jour:", error);
+          showAlert("Erreur lors de la mise à jour", "danger");
+        }
+      }
+
+      // Supprimer un administrateur
+      function deleteAdmin(id, prenom, nom) {
+        adminToDelete = { id, prenom, nom };
+        document.getElementById("admin-to-delete-info").innerHTML = `
+                <div class="alert alert-warning">
+                    <strong>${prenom} ${nom}</strong> (ID: ${id})
+                </div>
+            `;
+        new bootstrap.Modal(document.getElementById("deleteAdminModal")).show();
+      }
+
+      // Confirmer la suppression
+      async function confirmDeleteAdmin() {
+        if (!adminToDelete) return;
+
+        try {
+          const response = await fetch(
+            `../../api/admin.php?action=delete_user&user_id=${adminToDelete.id}`
+          );
+          const data = await response.json();
+
+          if (data.success) {
+            bootstrap.Modal.getInstance(
+              document.getElementById("deleteAdminModal")
+            ).hide();
+            loadAdmins(currentPage);
+            showAlert("Administrateur supprimé avec succès", "success");
+          } else {
+            showAlert(data.error || "Erreur lors de la suppression", "danger");
+          }
+        } catch (error) {
+          console.error("Erreur lors de la suppression:", error);
+          showAlert("Erreur lors de la suppression", "danger");
+        }
+      }
+
+      // Afficher une alerte
+      function showAlert(message, type) {
+        const alertHtml = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+        const alertContainer = document.createElement("div");
+        alertContainer.style.position = "fixed";
+        alertContainer.style.top = "20px";
+        alertContainer.style.right = "20px";
+        alertContainer.style.zIndex = "9999";
+        alertContainer.innerHTML = alertHtml;
+
+        document.body.appendChild(alertContainer);
+
+        setTimeout(() => {
+          alertContainer.remove();
+        }, 5000);
+      }
+
+      // Recherche en temps réel
+      let searchTimeout;
+      document
+        .getElementById("search-input")
+        .addEventListener("input", function () {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            loadAdmins(1);
+          }, 500);
+        });
+
+      // Charger les administrateurs au démarrage
+      loadAdmins();
+    </script>
+  </body>
+</html>

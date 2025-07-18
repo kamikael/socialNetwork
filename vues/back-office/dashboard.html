@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tableau de bord - Administration</title>
+    <link rel="stylesheet" href="../../assets/css/bootstrap.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      .sidebar {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.8);
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin: 4px 0;
+        transition: all 0.3s;
+      }
+      .sidebar .nav-link:hover,
+      .sidebar .nav-link.active {
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateX(5px);
+      }
+      .main-content {
+        background: #f8f9fa;
+        min-height: 100vh;
+      }
+      .stat-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+      }
+      .stat-card:hover {
+        transform: translateY(-5px);
+      }
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+      }
+      .bg-gradient-primary {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+      }
+      .bg-gradient-success {
+        background: linear-gradient(45deg, #11998e, #38ef7d);
+      }
+      .bg-gradient-warning {
+        background: linear-gradient(45deg, #f093fb, #f5576c);
+      }
+      .bg-gradient-info {
+        background: linear-gradient(45deg, #4facfe, #00f2fe);
+      }
+      .recent-item {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s;
+      }
+      .recent-item:hover {
+        transform: translateX(5px);
+      }
+      .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 px-0">
+          <div class="sidebar p-3">
+            <div class="text-center mb-4">
+              <h4 class="text-white mb-0">
+                <i class="fas fa-shield-alt me-2"></i>
+                Administration
+              </h4>
+            </div>
+
+            <nav class="nav flex-column">
+              <a
+                class="nav-link active"
+                href="#"
+                onclick="loadPage('dashboard')"
+              >
+                <i class="fas fa-tachometer-alt me-2"></i>
+                Tableau de bord
+              </a>
+              <a class="nav-link" href="#" onclick="loadPage('users')">
+                <i class="fas fa-users me-2"></i>
+                Utilisateurs
+              </a>
+              <a class="nav-link" href="#" onclick="loadPage('articles')">
+                <i class="fas fa-newspaper me-2"></i>
+                Articles
+              </a>
+              <a class="nav-link" href="#" onclick="loadPage('logs')">
+                <i class="fas fa-list-alt me-2"></i>
+                Logs
+              </a>
+              <a class="nav-link" href="#" onclick="loadPage('stats')">
+                <i class="fas fa-chart-bar me-2"></i>
+                Statistiques
+              </a>
+              <hr class="text-white" />
+              <a class="nav-link" href="../../index.html">
+                <i class="fas fa-home me-2"></i>
+                Retour au site
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 main-content p-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">
+              <i class="fas fa-tachometer-alt me-2 text-primary"></i>
+              Tableau de bord
+            </h2>
+            <div class="text-muted">
+              <i class="fas fa-clock me-1"></i>
+              <span id="current-time"></span>
+            </div>
+          </div>
+
+          <!-- Statistiques -->
+          <div class="row mb-4" id="stats-container">
+            <div class="col-md-3 mb-3">
+              <div class="stat-card p-3">
+                <div class="d-flex align-items-center">
+                  <div class="stat-icon bg-gradient-primary me-3">
+                    <i class="fas fa-users"></i>
+                  </div>
+                  <div>
+                    <h3 class="mb-0" id="total-users">-</h3>
+                    <small class="text-muted">Utilisateurs</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <div class="stat-card p-3">
+                <div class="d-flex align-items-center">
+                  <div class="stat-icon bg-gradient-success me-3">
+                    <i class="fas fa-user-check"></i>
+                  </div>
+                  <div>
+                    <h3 class="mb-0" id="active-users">-</h3>
+                    <small class="text-muted">Utilisateurs actifs</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <div class="stat-card p-3">
+                <div class="d-flex align-items-center">
+                  <div class="stat-icon bg-gradient-warning me-3">
+                    <i class="fas fa-newspaper"></i>
+                  </div>
+                  <div>
+                    <h3 class="mb-0" id="total-articles">-</h3>
+                    <small class="text-muted">Articles</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+              <div class="stat-card p-3">
+                <div class="d-flex align-items-center">
+                  <div class="stat-icon bg-gradient-info me-3">
+                    <i class="fas fa-comments"></i>
+                  </div>
+                  <div>
+                    <h3 class="mb-0" id="total-comments">-</h3>
+                    <small class="text-muted">Commentaires</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- Utilisateurs récents -->
+            <div class="col-md-6 mb-4">
+              <div class="chart-container">
+                <h5 class="mb-3">
+                  <i class="fas fa-users me-2 text-primary"></i>
+                  Utilisateurs récents
+                </h5>
+                <div id="recent-users-container">
+                  <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Chargement...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Articles récents -->
+            <div class="col-md-6 mb-4">
+              <div class="chart-container">
+                <h5 class="mb-3">
+                  <i class="fas fa-newspaper me-2 text-success"></i>
+                  Articles récents
+                </h5>
+                <div id="recent-articles-container">
+                  <div class="text-center py-4">
+                    <div class="spinner-border text-success" role="status">
+                      <span class="visually-hidden">Chargement...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logs récents -->
+          <div class="row">
+            <div class="col-12">
+              <div class="chart-container">
+                <h5 class="mb-3">
+                  <i class="fas fa-list-alt me-2 text-warning"></i>
+                  Activité récente
+                </h5>
+                <div id="recent-logs-container">
+                  <div class="text-center py-4">
+                    <div class="spinner-border text-warning" role="status">
+                      <span class="visually-hidden">Chargement...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../../assets/js/bootstrap.js"></script>
+    <script src="./auth-check.js"></script>
+    <script>
+      if (typeof initAdminSecurity === "function") {
+        initAdminSecurity();
+      }
+      // Mettre à jour l'heure
+      function updateTime() {
+        const now = new Date();
+        document.getElementById("current-time").textContent =
+          now.toLocaleString("fr-FR");
+      }
+
+      updateTime();
+      setInterval(updateTime, 1000);
+
+      // Charger les données du tableau de bord
+      async function loadDashboard() {
+        try {
+          const response = await fetch("/app/api/admin.php?action=dashboard");
+          const data = await response.json();
+
+          if (data.success) {
+            // Mettre à jour les statistiques
+            document.getElementById("total-users").textContent =
+              data.stats.total_users;
+            document.getElementById("active-users").textContent =
+              data.stats.active_users;
+            document.getElementById("total-articles").textContent =
+              data.stats.total_articles;
+            document.getElementById("total-comments").textContent =
+              data.stats.total_comments;
+
+            // Utilisateurs récents
+            const recentUsersHtml = data.recent_users
+              .map(
+                (user) => `
+                        <div class="recent-item">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">${user.prenom} ${
+                  user.nom
+                }</h6>
+                                    <small class="text-muted">${
+                                      user.email
+                                    }</small>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Inscrit le ${new Date(
+                                          user.date_inscription
+                                        ).toLocaleDateString("fr-FR")}
+                                    </small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-${
+                                      user.role === "admin"
+                                        ? "danger"
+                                        : "secondary"
+                                    }">${user.role}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `
+              )
+              .join("");
+
+            document.getElementById("recent-users-container").innerHTML =
+              recentUsersHtml;
+
+            // Articles récents
+            const recentArticlesHtml = data.recent_articles
+              .map(
+                (article) => `
+                        <div class="recent-item">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-newspaper fa-2x text-success"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">${article.titre}</h6>
+                                    <small class="text-muted">Par ${
+                                      article.prenom
+                                    } ${article.nom}</small>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        ${new Date(
+                                          article.created_at
+                                        ).toLocaleDateString("fr-FR")}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    `
+              )
+              .join("");
+
+            document.getElementById("recent-articles-container").innerHTML =
+              recentArticlesHtml;
+
+            // Logs récents
+            const recentLogsHtml = data.recent_logs
+              .map(
+                (log) => `
+                        <div class="recent-item">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-info-circle fa-2x text-warning"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">${log.action}</h6>
+                                    <small class="text-muted">${
+                                      log.description
+                                    }</small>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>
+                                        ${new Date(
+                                          log.created_at
+                                        ).toLocaleString("fr-FR")}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    `
+              )
+              .join("");
+
+            document.getElementById("recent-logs-container").innerHTML =
+              recentLogsHtml;
+          }
+        } catch (error) {
+          console.error("Erreur lors du chargement du tableau de bord:", error);
+        }
+      }
+
+      // Navigation entre les pages
+      function loadPage(page) {
+        // Mettre à jour la navigation active
+        document
+          .querySelectorAll(".nav-link")
+          .forEach((link) => link.classList.remove("active"));
+        event.target.classList.add("active");
+
+        // Charger la page correspondante
+        if (page === "dashboard") {
+          loadDashboard();
+        } else {
+          // Rediriger vers les autres pages
+          window.location.href = `${page}.html`;
+        }
+      }
+
+      // Charger le tableau de bord au démarrage
+      loadDashboard();
+
+      // Actualiser toutes les 30 secondes
+      setInterval(loadDashboard, 30000);
+    </script>
+  </body>
+</html>
