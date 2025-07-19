@@ -1,3 +1,19 @@
+# MEMBRE du groupe----------------------------------------
+MBARGA ESSOBE harold garnikael
+MAJORELLE VODOUNON
+NEAL TOKPO
+DEOS GRATIAS
+#-----------------------------------------------------
+
+#compte par default
+#-------------------
+#adminstrateur: 
+ email: admin@example.com
+ password: admin123
+# utilisateur normal
+email: darksideinfinity983@gmail.com
+password: kamikael
+
 # ----------------------------------------------------------------------------
 
 # mbarga essobe harold garnikael
@@ -167,8 +183,3 @@ curl http://localhost/app/api/admin.php?action=dashboard
 - **Logger toutes les actions critiques pour audit**
 
 ---
-
-## Licence
-
-Projet privé – usage interne.  
-Contactez l’auteur pour toute question ou contribution.
